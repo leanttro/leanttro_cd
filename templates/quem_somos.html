@@ -1,17 +1,40 @@
-{% extends "base_int.html" %}{% block title %}Quem Somos · Ética em Ação{% endblock %}
-{% block head %}<style>
-.sol-nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 26px}.sol-nav a{padding:8px 15px;border:1px solid var(--line);border-radius:22px;font-size:12px;font-weight:700;background:#fff}
-.sol{scroll-margin-top:110px}.sol-h{display:flex;align-items:center;gap:14px;margin-bottom:8px}.sol-h h2{margin:0}
-.sol .ico svg{width:34px;height:34px;stroke:var(--orange);fill:none;stroke-width:1.7;display:block}
-.sol p{font-size:15px;line-height:1.7;color:var(--muted);margin:0 0 14px}.sol-f{font-weight:600;color:var(--ink)!important}
-.sol-l{margin:0 0 16px;padding-left:20px;font-size:14px;line-height:1.65}.sol-l>li{margin-bottom:10px}.sol-l ul{margin:4px 0 0;padding-left:18px;color:var(--muted)}
-.vmv h3{font:20px Georgia,serif;margin:0 0 8px}.vmv p,.vmv li{font-size:14px;line-height:1.7;color:var(--muted);margin:0}.vmv ul{margin:0;padding-left:18px}
-.cred{margin:12px 0 0;padding-left:18px;font-size:14px;line-height:1.7}.cred li{margin-bottom:6px}
+{% extends "base_int.html" %}{% block title %}Quem somos · Ética em Ação{% endblock %}
+{% block head %}<meta name="description" content="A Ética em Ação! é uma consultoria especializada em Compliance, Proteção de Dados e Governança Corporativa. Conheça Fernanda Dutra Vieira Lopes, sócia e fundadora.">
+<style>
+.qs-intro{max-width:760px;margin-bottom:38px}
+.qs{display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:56px;align-items:start}
+.qs-photo{position:sticky;top:24px;margin:0 0 0 14px}
+.qs-photo::before{content:"";position:absolute;inset:14px -14px -14px 14px;border:2px solid var(--orange);border-radius:16px;z-index:0}
+.qs-photo img{position:relative;z-index:1;display:block;width:100%;height:auto;border-radius:16px;box-shadow:0 18px 40px rgba(16,32,43,.18);background:#e9e2d4}
+.qs-role{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--orange);margin:0 0 8px}
+.qs-name{font:clamp(28px,3.4vw,38px)/1.08 Georgia,serif;letter-spacing:-.8px;margin:0 0 22px}
+.qs-list{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.qs-list li{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px 16px 50px;font-size:14px;line-height:1.65;box-shadow:0 8px 22px rgba(16,32,43,.05)}
+.qs-list li::before{content:"";position:absolute;left:18px;top:19px;width:16px;height:16px;border-radius:50%;background:var(--orange) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M4.5 8.3l2.3 2.3 4.7-4.9'/%3E%3C/svg%3E") center/12px no-repeat}
+.qs-cta{margin-top:56px;background:#111b20;color:#fff;border-radius:16px;padding:34px 38px;display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.qs-cta h2{color:#fff;margin:0 0 6px;font-size:26px}.qs-cta p{margin:0;font-size:14px;line-height:1.6;color:#e6e6e3;max-width:520px}
+.qs-cta .btn{margin:0!important}
+.vmv h3{font:20px Georgia,serif;margin:0 0 8px}.vmv p,.vmv li{font-size:14px;line-height:1.7;color:var(--muted);margin:0}.vmv ul{margin:0;padding-left:18px}.vmv li{margin-bottom:8px}
+.qs-vmv{margin-top:56px}
+@media(max-width:860px){.qs{grid-template-columns:1fr;gap:34px}.qs-photo{position:relative;top:0;max-width:340px;margin:0 14px 0 0}.qs-cta{padding:26px 22px}}
 </style>{% endblock %}
-{% block c %}<div class="wrap"><p class="eyebrow">Quem somos</p><h1>Conhecimento técnico<br>com visão prática de negócios.</h1>
-<p class="lead">A Ética em Ação! é uma consultoria especializada em Compliance e Treinamentos, com foco em Compliance, Proteção de Dados e Governança Corporativa.</p>
-<section class="about" style="padding:0;margin:0 0 24px"><div class="founder"><div class="founder-photo" role="img" aria-label="Fernanda Dutra Vieira Lopes"></div><div class="founder-copy"><p class="eyebrow">Sócia / Fundadora</p><h3>Fernanda Dutra<br>Vieira Lopes</h3><ul class="cred"><li>Advogada há 12 anos, pós-graduada em Direito Digital e Compliance pelo IBMEC.</li><li>Certificação Profissional em Compliance Anticorrupção (CPC-A), idealizada pela LEC em parceria com a FGV Projetos.</li><li>DPO pela G8 Academy, acreditada pela Exin.</li><li>Coautora do e-book Comentários à Lei Geral de Proteção de Dados, pela Comissão de Direito Digital, Tecnologia e Inteligência Artificial da OAB Jabaquara, publicado em janeiro de 2020.</li><li>Coordenadora do Grupo de Trabalho de Programa de Compliance e Manuais Gerais de Compliance da Comissão de Estudos de Compliance da OAB/SP.</li><li>Membro da Comissão de Compliance do Instituto dos Advogados de SP (IASP) e do Grupo de Estudo de Compliance Empresarial da FGV.</li></ul></div></div></section>
-<div class="x-grid vmv"><div class="x-card"><h3>Visão</h3><p>Ser reconhecida como modelo em consultoria de Compliance e LGPD, promovendo a excelência na gestão de riscos e a proteção dos dados em organizações de todos os setores, com base na comunicação assertiva.</p></div>
+{% block c %}<div class="wrap">
+<div class="qs-intro"><p class="eyebrow">Quem somos</p><h1>Conhecimento técnico<br>com visão prática de negócios.</h1>
+<p class="lead" style="margin:0">A Ética em Ação! é uma consultoria especializada em Compliance e Treinamentos, com foco em Compliance, Proteção de Dados e Governança Corporativa.</p></div>
+<div class="qs">
+<figure class="qs-photo"><img src="{{ img_url('fundadora', w=1000) }}" alt="Fernanda Dutra Vieira Lopes, sócia e fundadora da Ética em Ação" loading="lazy"></figure>
+<div><p class="qs-role">Sócia / Fundadora</p><h2 class="qs-name">Fernanda Dutra Vieira Lopes</h2>
+<ul class="qs-list">
+<li>Advogada há 12 anos, pós-graduada em Direito Digital e Compliance pelo IBMEC.</li>
+<li>Certificação Profissional em Compliance Anticorrupção (CPC-A), idealizada pela LEC em parceria com a FGV Projetos.</li>
+<li>DPO pela G8 Academy, acreditada pela Exin.</li>
+<li>Coautora do e-book Comentários à Lei Geral de Proteção de Dados, pela Comissão de Direito Digital, Tecnologia e Inteligência Artificial da OAB Jabaquara, publicado em janeiro de 2020.</li>
+<li>Coordenadora do Grupo de Trabalho de Programa de Compliance e Manuais Gerais de Compliance da Comissão de Estudos de Compliance da OAB/SP.</li>
+<li>Membro da Comissão de Compliance do Instituto dos Advogados de SP (IASP) e do Grupo de Estudo de Compliance Empresarial da FGV.</li>
+</ul></div></div>
+<div class="qs-vmv"><div class="x-grid vmv"><div class="x-card"><h3>Visão</h3><p>Ser reconhecida como modelo em consultoria de Compliance e LGPD, promovendo a excelência na gestão de riscos e a proteção dos dados em organizações de todos os setores, com base na comunicação assertiva.</p></div>
 <div class="x-card"><h3>Missão</h3><p>Capacitar empresas a adotarem práticas éticas, legais e transparentes, através de programas de Compliance e garantir a conformidade com as regulamentações de privacidade e segurança de dados, por meio de projetos personalizados e treinamentos especializados.</p></div></div>
 <div class="x-card vmv"><h3>Valores</h3><ul><li><strong>Integridade:</strong> Compromisso com a honestidade, transparência e ética em todas as interações.</li><li><strong>Excelência:</strong> Busca constante pela qualidade e resultados excepcionais.</li><li><strong>Empoderamento:</strong> Capacitar clientes e colaboradores a tomar decisões informadas e responsáveis.</li><li><strong>Inovação:</strong> Adotar abordagens criativas e tecnológicas para resolver desafios de conformidade.</li><li><strong>Colaboração:</strong> Trabalhar em parceria com clientes, colegas e partes interessadas.</li></ul></div>
-<a class="btn" href="/contato">Fale com uma especialista <span>→</span></a></div>{% endblock %}
+</div>
+<div class="qs-cta"><div><h2>Converse com uma especialista.</h2><p>Conte o cenário da sua empresa e indicamos a solução mais adequada.</p></div><a class="btn" href="/contato">Fale conosco <span>→</span></a></div>
+</div>{% endblock %}
