@@ -467,7 +467,7 @@ def posts_publicados(limite=None, tipo=None):
 
 @app.get("/")
 def index():
-    return render_template("index.html", posts_recentes=posts_publicados(3), videos_recentes=posts_publicados(3, "video"), blog_url="/blog")
+    return render_template("index.html", posts_recentes=posts_publicados(3, "artigo"), videos_recentes=posts_publicados(3, "video"), blog_url="/blog")
 
 
 @app.get("/solucoes")
