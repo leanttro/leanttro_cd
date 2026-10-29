@@ -1,6 +1,0 @@
-{% extends "base_int.html" %}{% block title %}Conteúdos · Ética em Ação{% endblock %}
-{% block c %}<div class="wrap"><p class="eyebrow">Conteúdos</p><h1>Informação para decidir melhor.</h1>
-<p class="lead">Artigos e materiais sobre Compliance, LGPD e governança corporativa.</p>
-<div class="x-card" style="margin:0 0 26px"><h2>Na mídia</h2><p class="lead" style="margin:0 0 12px">Acompanhe os vídeos, podcasts e artigos da Ética em Ação.</p><a class="btn outline" href="https://www.youtube.com/live/E6HW4YqSPJE" target="_blank" rel="noopener" style="margin:0">Assistir no YouTube <span>→</span></a></div>
-{% if posts %}<div class="posts">{% for p in posts %}<a class="post" href="/blog/{{ p.slug }}"><div class="post-capa"{% if capa_url(p, 800) %} style="background-image:url('{{ capa_url(p, 800) }}')"{% endif %}></div><div class="post-body"><small>{{ p.publicado_em|data_br }}</small><h3>{{ p.titulo }}</h3>{% if p.resumo %}<p>{{ p.resumo }}</p>{% endif %}</div></a>{% endfor %}</div>
-{% else %}<p class="lead">Em breve, novos conteúdos por aqui.</p>{% endif %}</div>{% endblock %}
