@@ -31,6 +31,7 @@ from flask import (Flask, Response, abort, g, redirect, render_template, request
 from jinja2 import ChoiceLoader, DictLoader
 from markupsafe import Markup, escape
 from PIL import Image, ImageOps
+from urllib.parse import parse_qs, urlparse
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 # ═══ CONFIG ════════════════════════════════════════════════════════════════
@@ -143,6 +144,8 @@ def _fechar(_):
 def init_db():
     c = conectar()
     c.executescript(SCHEMA)
+    if "video" not in [r[1] for r in c.execute("PRAGMA table_info(posts)")]:
+        c.execute("ALTER TABLE posts ADD COLUMN video TEXT")  # id do vídeo do YouTube (vazio = artigo)
     c.commit()
     c.close()
 
@@ -246,9 +249,43 @@ def img_abs(slot, w=None):
     return request.url_root.rstrip("/") + img_url(slot, w)
 
 
+YT_RE = re.compile(r"^[A-Za-z0-9_-]{11}$")
+
+
+def yt_id(url):
+    """Extrai o id de um link do YouTube (watch, youtu.be, live, shorts, embed). Vazio se inválido."""
+    u = (url or "").strip()
+    if YT_RE.match(u):
+        return u
+    if not u:
+        return ""
+    pr = urlparse(u if "://" in u else "https://" + u)
+    host = (pr.hostname or "").lower()
+    for pre in ("www.", "m.", "music."):
+        if host.startswith(pre):
+            host = host[len(pre):]
+    cand = ""
+    if host == "youtu.be":
+        cand = pr.path.strip("/").split("/")[0]
+    elif host in ("youtube.com", "youtube-nocookie.com"):
+        if pr.path.rstrip("/") == "/watch":
+            cand = (parse_qs(pr.query).get("v") or [""])[0]
+        else:
+            partes = pr.path.strip("/").split("/")
+            if len(partes) > 1 and partes[0] in ("embed", "live", "shorts", "v"):
+                cand = partes[1]
+    return cand if YT_RE.match(cand) else ""
+
+
 def capa_url(post, w=None):
     s = "capa-%d" % post["id"]
-    return img_url(s, w) if tem_img(s) else ""
+    if tem_img(s):
+        return img_url(s, w)
+    try:
+        v = post["video"]
+    except (KeyError, IndexError):
+        v = ""
+    return "https://i.ytimg.com/vi/%s/hqdefault.jpg" % v if v else ""  # vídeo sem capa: miniatura do YouTube
 
 
 PLACEHOLDER = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 9"><rect width="16" height="9" fill="#e8e2d6"/></svg>')
@@ -351,6 +388,7 @@ header{position:relative!important;background:var(--paper)}
 .x{padding:28px 0 70px;min-height:72vh;background:var(--paper)}
 .x h1{font:clamp(30px,4vw,44px)/1.1 Georgia,serif;letter-spacing:-1px;margin:0 0 12px}.x h2{font:26px/1.2 Georgia,serif;margin:0 0 10px}.x h3{margin:0 0 8px}
 .x p.lead{font-size:15px;line-height:1.7;color:var(--muted);max-width:720px;margin:0 0 26px}
+.x-video{position:relative;max-width:860px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin:10px 0 24px;background:#000}.x-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .x-card,.x-grid>*{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}
 .x-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:20px}
 .x-grid{display:grid;gap:20px;grid-template-columns:1fr 1fr;align-items:start}@media(max-width:820px){.x-grid{grid-template-columns:1fr}}
@@ -362,6 +400,7 @@ header{position:relative!important;background:var(--paper)}
 .x table{width:100%;border-collapse:collapse;font-size:13px;background:#fff}.x th,.x td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.x th{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
 .x-pill{display:inline-block;padding:3px 10px;border-radius:20px;background:#f3ece0;font-size:11px;font-weight:700}
 .x-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 20px}.x-tabs a{padding:9px 16px;border:1px solid var(--line);border-radius:22px;font-size:12px;font-weight:700;background:#fff}.x-tabs a.on{background:var(--orange);border-color:var(--orange);color:#fff}
+.post-capa{position:relative}.is-video .post-capa::after{content:"";position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:rgba(16,32,43,.82) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 6.5v11l9-5.5z'/%3E%3C/svg%3E") center/26px no-repeat;box-shadow:0 6px 18px rgba(0,0,0,.28)}.is-video:hover .post-capa::after{background-color:var(--orange)}
 .x-proto{font:700 34px Georgia,serif;letter-spacing:3px;color:var(--orange);margin:10px 0;word-break:break-all}
 .x-art{max-width:760px;font-size:16px;line-height:1.8}.x-art h2{margin-top:30px}.x-scroll{overflow-x:auto}
 .x-thumb{width:150px;height:90px;object-fit:contain;background:#eee;border-radius:8px;border:1px solid var(--line)}
@@ -416,14 +455,19 @@ def _413(_):
 
 
 # ═══ SITE PÚBLICO ══════════════════════════════════════════════════════════
-def posts_publicados(limite=None):
-    q = "SELECT * FROM posts WHERE publicado=1 ORDER BY publicado_em DESC, id DESC"
+def posts_publicados(limite=None, tipo=None):
+    q = "SELECT * FROM posts WHERE publicado=1"
+    if tipo == "video":
+        q += " AND video IS NOT NULL AND video<>''"
+    elif tipo == "artigo":
+        q += " AND (video IS NULL OR video='')"
+    q += " ORDER BY publicado_em DESC, id DESC"
     return db().execute(q + (" LIMIT %d" % limite if limite else "")).fetchall()
 
 
 @app.get("/")
 def index():
-    return render_template("index.html", posts_recentes=posts_publicados(3), blog_url="/blog")
+    return render_template("index.html", posts_recentes=posts_publicados(3), videos_recentes=posts_publicados(3, "video"), blog_url="/blog")
 
 
 @app.get("/solucoes")
@@ -448,7 +492,9 @@ def privacidade():
 
 @app.get("/blog")
 def blog():
-    return render_template("blog.html", posts=posts_publicados())
+    tipo = request.args.get("tipo")
+    tipo = tipo if tipo in ("video", "artigo") else None
+    return render_template("blog.html", posts=posts_publicados(tipo=tipo), tipo=tipo)
 
 
 @app.get("/blog/<slug>")
@@ -635,19 +681,23 @@ def admin_post(i):
         if not titulo:
             return render_template("admin_post.html", p=p, erro="Informe o título."), 400
         resumo, corpo_ = limpar(request.form.get("resumo"), 300), (request.form.get("corpo") or "")[:60000]
+        video_in = limpar(request.form.get("video"), 300)
+        vid = yt_id(video_in)
+        if video_in and not vid:
+            return render_template("admin_post.html", p=p, erro="Link do YouTube inválido. Cole o endereço completo do vídeo."), 400
         pub = 1 if request.form.get("publicado") else 0
         d = db()
         if p:
             pe = p["publicado_em"] or (agora() if pub else None)
-            d.execute("UPDATE posts SET titulo=?,resumo=?,corpo=?,publicado=?,publicado_em=? WHERE id=?",
-                      (titulo, resumo, corpo_, pub, pe, p["id"]))
+            d.execute("UPDATE posts SET titulo=?,resumo=?,corpo=?,publicado=?,publicado_em=?,video=? WHERE id=?",
+                      (titulo, resumo, corpo_, pub, pe, vid, p["id"]))
             pid = p["id"]
         else:
             slug = slugify(titulo)
             if d.execute("SELECT 1 FROM posts WHERE slug=?", (slug,)).fetchone():
                 slug += "-" + secrets.token_hex(2)
-            cur = d.execute("INSERT INTO posts(titulo,slug,resumo,corpo,publicado,publicado_em,criado_em) VALUES(?,?,?,?,?,?,?)",
-                            (titulo, slug, resumo, corpo_, pub, agora() if pub else None, agora()))
+            cur = d.execute("INSERT INTO posts(titulo,slug,resumo,corpo,publicado,publicado_em,criado_em,video) VALUES(?,?,?,?,?,?,?,?)",
+                            (titulo, slug, resumo, corpo_, pub, agora() if pub else None, agora(), vid))
             pid = cur.lastrowid
         d.commit()
         capa = request.files.get("capa")
