@@ -18,7 +18,7 @@
 <meta property="og:type" content="website"><meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Ética em Ação"><meta property="og:url" content="{{ canonical_url() }}">
 <meta property="og:title" content="Ética em Ação | Consultoria e Treinamentos"><meta property="og:description" content="Ética em Ação — consultoria em Compliance, proteção de dados, governança e treinamentos.">
-<meta property="og:image" content="{{ img_abs('og', w=1200) if tem_img('og') else img_abs('hero', w=1200) }}">
+<meta property="og:image" content="{{ img_abs('og', w=1200) if tem_img('og') else og_logo() }}">{% if not tem_img('og') %}<meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">{% endif %}<meta name="twitter:card" content="summary_large_image">
 <style>
 :root{--ink:#10202b;--dark:#10191d;--orange:#f15b17;--cream:#f7f3eb;--paper:#fbf9f4;--muted:#475461;--line:#d9d2c7}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,Helvetica,sans-serif}a{color:inherit;text-decoration:none}.wrap{width:min(1120px,90%);margin:auto}
@@ -105,6 +105,34 @@ header{height:auto}.nav{height:auto;min-height:198px}.brand{min-width:0}.brand i
 </style>
 <script src="{{ url_for('static', filename='lead.js') }}" defer></script>
 <script>document.addEventListener('DOMContentLoaded',function(){var p=new URLSearchParams(location.search);document.querySelectorAll('.form input[type=hidden]').forEach(function(i){if(i.name==='referrer')i.value=document.referrer||'';else if(p.get(i.name))i.value=p.get(i.name)})})</script>
+<style>
+/* contato: cartão em duas partes (info escura + formulário claro) */
+.contact{background:var(--cream);color:var(--ink);padding:64px 0}
+.contact-card{display:grid;grid-template-columns:.85fr 1.15fr;border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 24px 60px rgba(16,32,43,.16)}
+.contact-info{position:relative;overflow:hidden;padding:44px 38px;background:linear-gradient(160deg,#10191d 0%,#1a3039 100%);color:#fff}
+.contact-info::after{content:"";position:absolute;right:-90px;bottom:-90px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(241,91,23,.38),transparent 70%);pointer-events:none}
+.contact-info>*{position:relative;z-index:1}
+.contact .contact-info h2{color:#fff;font-size:32px;margin:0 0 14px}
+.contact .contact-info p{font-size:14px;line-height:1.7;color:#d8d6d0;max-width:380px}
+.c-list{display:grid;gap:12px;margin:28px 0 24px}
+.c-item{display:flex;gap:14px;align-items:center;padding:14px 16px;border:1px solid rgba(255,255,255,.16);border-radius:14px;background:rgba(255,255,255,.06);color:#fff;transition:border-color .18s,background .18s,transform .18s}
+.c-item:hover{border-color:var(--orange);background:rgba(255,255,255,.1);transform:translateY(-2px)}
+.c-ico{flex:none;width:44px;height:44px;border-radius:50%;background:var(--orange);display:grid;place-items:center}
+.c-ico svg{width:20px;height:20px}
+.c-item small{display:block;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:#f9b98f;margin-bottom:3px}
+.c-item strong{font-size:15px;font-weight:700;overflow-wrap:anywhere}
+.contact .contact-info p.c-note{display:flex;gap:10px;align-items:center;font-size:12px;color:#c9c7c0;margin:0}
+.c-note svg{width:18px;height:18px;flex:none}
+.contact-formwrap{padding:42px 38px;background:#fff}
+.c-form-title{font:26px/1.15 Georgia,serif;margin:0 0 4px;color:var(--ink)}
+.contact .field label{color:var(--muted)}
+.contact .field input,.contact .field select,.contact .field textarea{background:#faf8f3;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:13px 14px;transition:border-color .15s,box-shadow .15s}
+.contact .field input:focus,.contact .field select:focus,.contact .field textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(241,91,23,.14);background:#fff}
+.contact .field textarea{min-height:110px}
+.contact .consent{color:var(--muted)}
+@media(max-width:900px){.contact{padding:40px 0}.contact-card{grid-template-columns:1fr}.contact-info,.contact-formwrap{padding:30px 22px}.contact .contact-info h2{font-size:28px}}
+.footer-brand img{filter:brightness(0) invert(1)}
+</style>
 </head>
 <body class="">
 <header><div class="wrap nav">
@@ -152,10 +180,12 @@ header{height:auto}.nav{height:auto;min-height:198px}.brand{min-width:0}.brand i
 <a class="all-solutions" href="{{ blog_url }}">VER TODOS OS CONTEÚDOS <span>→</span></a>
 </div></section>
 {% endif %}
-<section class="contact" id="contato"><div class="wrap contact-grid">
-<div class="contact-copy"><p class="eyebrow">Contato</p><h2>Converse com uma especialista.</h2><p>Conte rapidamente o cenário da sua empresa. Retornamos para entender a necessidade e indicar a solução mais adequada.</p>
-<div class="contact-list">{% set wa = whatsapp_link("Olá! Gostaria de conversar sobre as soluções da Ética em Ação.") %}{% if wa %}<a href="{{ wa }}" target="_blank" rel="noopener">WhatsApp →</a>{% endif %}<a href="mailto:comercial@eticaemacao.com.br">comercial@eticaemacao.com.br</a></div></div>
-<form class="form" data-lead action="/lead" method="post">
+<section class="contact" id="contato"><div class="wrap">
+<div class="contact-card">
+<div class="contact-info"><p class="eyebrow">Contato</p><h2>Converse com uma especialista.</h2><p>Conte rapidamente o cenário da sua empresa. Retornamos para entender a necessidade e indicar a solução mais adequada.</p>
+<div class="c-list">{% set wa = whatsapp_link("Olá! Gostaria de conversar sobre as soluções da Ética em Ação.") %}{% if wa %}<a class="c-item" href="{{ wa }}" target="_blank" rel="noopener"><span class="c-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span><small>WhatsApp</small><strong>{{ whatsapp_num() }}</strong></span></a>{% endif %}<a class="c-item" href="mailto:comercial@eticaemacao.com.br"><span class="c-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><span><small>E-mail</small><strong>comercial@eticaemacao.com.br</strong></span></a></div>
+<p class="c-note"><svg viewBox="0 0 24 24" fill="none" stroke="#f58b36" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Seus dados são tratados com sigilo, conforme a LGPD.</span></p></div>
+<div class="contact-formwrap"><form class="form" data-lead action="/lead" method="post"><h3 class="c-form-title">Envie sua mensagem</h3>
 <div class="form-row"><div class="field"><label for="f-nome">Nome</label><input id="f-nome" name="nome" required maxlength="120" autocomplete="name"></div><div class="field"><label for="f-empresa">Empresa</label><input id="f-empresa" name="empresa" maxlength="120" autocomplete="organization"></div></div>
 <div class="form-row"><div class="field"><label for="f-email">E-mail</label><input id="f-email" name="email" type="email" required maxlength="254" autocomplete="email"></div><div class="field"><label for="f-tel">Telefone / WhatsApp</label><input id="f-tel" name="telefone" type="tel" maxlength="30" autocomplete="tel" placeholder="(11) 99999-9999"></div></div>
 <div class="field"><label for="f-int">Interesse</label><select id="f-int" name="interesse"><option>Compliance</option><option>LGPD</option><option>DPO as a Service</option><option>Due Diligence</option><option>Canal de Denúncias (para minha empresa)</option><option>Treinamentos</option><option>Outro assunto</option></select></div>
@@ -164,7 +194,8 @@ header{height:auto}.nav{height:auto;min-height:198px}.brand{min-width:0}.brand i
 <input type="hidden" name="pagina" value="{{ canonical_url() }}"><input type="hidden" name="referrer" value=""><input type="hidden" name="utm_source" value=""><input type="hidden" name="utm_medium" value=""><input type="hidden" name="utm_campaign" value="">
 <label class="consent"><input type="checkbox" name="consentimento" value="sim" required><span>Concordo com o uso dos dados informados para retorno deste contato, conforme a <a href="/privacidade">Política de Privacidade</a>.</span></label>
 <button class="btn" type="submit">Enviar mensagem <span>→</span></button>
-</form></div></section>
+</form></div>
+</div></div></section>
 
 </main>
 <footer><div class="wrap"><div class="footer-top">
