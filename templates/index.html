@@ -136,20 +136,20 @@ header{height:auto}.nav{height:auto;min-height:198px}.brand{min-width:0}.brand i
 <section class="report" id="canal"><div class="report-photo" role="img" aria-label="Pessoa utilizando um computador"></div><div class="report-content"><div class="report-icon">♧</div><div><p class="eyebrow">Canal de denúncias</p><h2>Sua voz importa.<br>Sua identidade é protegida.</h2><p>Um canal seguro para relatar situações que precisam ser apuradas, com a possibilidade de acompanhar o andamento por meio de um protocolo, sem a necessidade de se identificar.</p><div class="report-actions"><a class="btn" href="{{ canal_url }}#registrar">Registrar uma denúncia <span>→</span></a><a class="btn outline" href="{{ canal_url }}#acompanhar">⌕ Acompanhar denúncia</a></div></div><aside class="report-note"><svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="#f15b17" stroke-width="1.8"><rect x="5" y="13" width="22" height="16" rx="3"/><path d="M10 13V9a6 6 0 0 1 12 0v4m-6 6v4"/></svg>Sigilo, segurança e transparência em todas as etapas.</aside></div></section>
 <section class="about" id="quem-somos"><div class="about-copy"><p class="eyebrow">Quem somos</p><h2>Conhecimento técnico<br>com visão prática de negócios.</h2><p>A Ética em Ação! é uma consultoria especializada em Compliance, Proteção de Dados e Governança Corporativa. À frente do projeto, está Fernanda Dutra Vieira Lopes, com experiência e certificações na área.</p><a class="btn outline" href="/quem-somos">Saiba mais sobre nós <span>→</span></a></div><div class="founder"><div class="founder-photo" role="img" aria-label="Retrato profissional ilustrativo"></div><div class="founder-copy"><p class="eyebrow">Fundadora</p><h3>Fernanda Dutra<br>Vieira Lopes</h3><p>Advogada, especialista em Direito Empresarial, Compliance e LGPD, com experiência em consultoria e gestão de riscos.</p><a class="btn outline" href="/quem-somos">Conheça sua trajetória <span>→</span></a></div></div></section>
 
-{% if posts_recentes %}
-<section class="contents" id="conteudos"><div class="wrap">
-<div class="section-head"><div><p class="eyebrow">Conteúdos</p><h2>Informação para decidir melhor.</h2></div><p>Artigos e materiais sobre Compliance, LGPD e governança corporativa.</p></div>
-<div class="posts">{% for p in posts_recentes %}
-<a class="post{% if p.video %} is-video{% endif %}" href="{{ blog_url }}/{{ p.slug }}"><div class="post-capa"{% if capa_url(p, 800) %} style="background-image:url('{{ capa_url(p, 800) }}')"{% endif %}></div><div class="post-body"><small>{{ p.publicado_em|data_br }}</small><h3>{{ p.titulo }}</h3>{% if p.resumo %}<p>{{ p.resumo }}</p>{% endif %}</div></a>{% endfor %}</div>
-<a class="all-solutions" href="{{ blog_url }}">VER TODOS OS CONTEÚDOS <span>→</span></a>
-</div></section>
-{% endif %}
 {% if videos_recentes %}
 <section class="contents videos" id="videos"><div class="wrap">
 <div class="section-head"><div><p class="eyebrow">Vídeos</p><h2>Assista e saiba mais.</h2></div><p>Vídeos da Ética em Ação sobre Compliance, LGPD e governança corporativa.</p></div>
 <div class="posts">{% for p in videos_recentes %}
 <a class="post is-video" href="{{ blog_url }}/{{ p.slug }}"><div class="post-capa"{% if capa_url(p, 800) %} style="background-image:url('{{ capa_url(p, 800) }}')"{% endif %}></div><div class="post-body"><small>{{ p.publicado_em|data_br }}</small><h3>{{ p.titulo }}</h3>{% if p.resumo %}<p>{{ p.resumo }}</p>{% endif %}</div></a>{% endfor %}</div>
 <a class="all-solutions" href="{{ blog_url }}?tipo=video">VER TODOS OS VÍDEOS <span>→</span></a>
+</div></section>
+{% endif %}
+{% if posts_recentes %}
+<section class="contents" id="conteudos"><div class="wrap">
+<div class="section-head"><div><p class="eyebrow">Conteúdos</p><h2>Informação para decidir melhor.</h2></div><p>Artigos e materiais sobre Compliance, LGPD e governança corporativa.</p></div>
+<div class="posts">{% for p in posts_recentes %}
+<a class="post{% if p.video %} is-video{% endif %}" href="{{ blog_url }}/{{ p.slug }}"><div class="post-capa"{% if capa_url(p, 800) %} style="background-image:url('{{ capa_url(p, 800) }}')"{% endif %}></div><div class="post-body"><small>{{ p.publicado_em|data_br }}</small><h3>{{ p.titulo }}</h3>{% if p.resumo %}<p>{{ p.resumo }}</p>{% endif %}</div></a>{% endfor %}</div>
+<a class="all-solutions" href="{{ blog_url }}">VER TODOS OS CONTEÚDOS <span>→</span></a>
 </div></section>
 {% endif %}
 <section class="contact" id="contato"><div class="wrap contact-grid">
