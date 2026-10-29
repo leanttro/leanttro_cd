@@ -333,14 +333,14 @@ document.addEventListener('submit',function(e){
 """
 
 
-@app.get("/static/<path:filename>")
+@app.get("/static/<path:filename>", endpoint="static")
 def static_files(filename):
     if filename == "lead.js":
         return Response(LEAD_JS, mimetype="application/javascript", headers={"Cache-Control": "public, max-age=3600"})
     abort(404)
 
 
-# ═══ TEMPLATES DAS PÁGINAS INTERNAS (herdam CSS/topo/rodapé do index.html) ═
+# ═══ BASE DAS PÁGINAS INTERNAS (herda CSS/topo/rodapé do index.html; páginas ficam em templates/) ═
 INT_CSS = """<style>
 .x{padding:125px 0 70px;min-height:72vh;background:var(--paper)}
 .x h1{font:clamp(30px,4vw,44px)/1.1 Georgia,serif;letter-spacing:-1px;margin:0 0 12px}.x h2{font:26px/1.2 Georgia,serif;margin:0 0 10px}.x h3{margin:0 0 8px}
@@ -360,122 +360,6 @@ INT_CSS = """<style>
 .x-thumb{width:150px;height:90px;object-fit:contain;background:#eee;border-radius:8px;border:1px solid var(--line)}
 </style>"""
 
-T = {}
-T["erro.html"] = """{% extends "base_int.html" %}{% block title %}Ops · Ética em Ação{% endblock %}
-{% block c %}<div class="wrap"><h1>{{ msg }}</h1><p class="lead">Se precisar, volte para o início e tente de novo.</p><a class="btn" href="/">Voltar ao início</a></div>{% endblock %}"""
-
-T["obrigado.html"] = """{% extends "base_int.html" %}{% block title %}Mensagem enviada · Ética em Ação{% endblock %}
-{% block c %}<div class="wrap"><h1>Mensagem enviada!</h1><p class="lead">Recebemos o seu contato e retornaremos em breve.</p><a class="btn" href="/">Voltar ao início</a></div>{% endblock %}"""
-
-T["privacidade.html"] = """{% extends "base_int.html" %}{% block title %}Política de Privacidade · Ética em Ação{% endblock %}
-{% block c %}<div class="wrap"><h1>Política de Privacidade</h1><div class="x-art">
-<p><strong>TEXTO-MODELO — deve ser revisado e validado por profissional habilitado antes da publicação.</strong></p>
-<h2>1. Dados que coletamos</h2><p>Coletamos apenas os dados informados voluntariamente nos formulários do site (nome, e-mail, interesse e mensagem) e, no Canal de Denúncias, o relato e as informações que você decidir fornecer.</p>
-<h2>2. Finalidade</h2><p>Os dados do formulário de contato são usados para retornar o seu contato. Os dados do Canal de Denúncias são usados exclusivamente para registrar, apurar e responder a denúncia.</p>
-<h2>3. Anonimato no Canal de Denúncias</h2><p>Você pode registrar uma denúncia sem se identificar. Nesse caso, nome e contato não são gravados, nem o endereço de IP. O acompanhamento é feito apenas pelo número de protocolo.</p>
-<h2>4. Compartilhamento e armazenamento</h2><p>Não vendemos nem compartilhamos seus dados com terceiros para fins comerciais. Os dados ficam armazenados em ambiente protegido pelo tempo necessário para cumprir as finalidades acima e obrigações legais.</p>
-<h2>5. Seus direitos (LGPD)</h2><p>Você pode solicitar acesso, correção, anonimização ou exclusão dos seus dados pelo e-mail comercial@eticaemacao.com.br.</p>
-</div></div>{% endblock %}"""
-
-T["blog.html"] = """{% extends "base_int.html" %}{% block title %}Conteúdos · Ética em Ação{% endblock %}
-{% block c %}<div class="wrap"><p class="eyebrow">Conteúdos</p><h1>Informação para decidir melhor.</h1>
-<p class="lead">Artigos e materiais sobre Compliance, LGPD e governança corporativa.</p>
-{% if posts %}<div class="posts">{% for p in posts %}<a class="post" href="/blog/{{ p.slug }}"><div class="post-capa"{% if capa_url(p, 800) %} style="background-image:url('{{ capa_url(p, 800) }}')"{% endif %}></div><div class="post-body"><small>{{ p.publicado_em|data_br }}</small><h3>{{ p.titulo }}</h3>{% if p.resumo %}<p>{{ p.resumo }}</p>{% endif %}</div></a>{% endfor %}</div>
-{% else %}<p class="lead">Em breve, novos conteúdos por aqui.</p>{% endif %}</div>{% endblock %}"""
-
-T["post.html"] = """{% extends "base_int.html" %}{% block title %}{{ p.titulo }} · Ética em Ação{% endblock %}
-{% block head %}<meta name="description" content="{{ p.resumo or '' }}">{% endblock %}
-{% block c %}<div class="wrap"><a href="/blog" style="font-size:12px;color:var(--orange);font-weight:700">← Todos os conteúdos</a>
-<p class="eyebrow" style="margin-top:22px">{{ p.publicado_em|data_br }}</p><h1>{{ p.titulo }}</h1>
-{% if capa_url(p, 1200) %}<img src="{{ capa_url(p, 1200) }}" alt="" style="width:100%;max-width:760px;border-radius:12px;margin:10px 0 24px">{% endif %}
-<div class="x-art">{{ p.corpo|corpo }}</div></div>{% endblock %}"""
-
-T["canal.html"] = """{% extends "base_int.html" %}{% block title %}Canal de Denúncias · Ética em Ação{% endblock %}
-{% block head %}<meta name="robots" content="noindex">{% endblock %}
-{% block c %}<div class="wrap"><p class="eyebrow">Canal de denúncias</p><h1>Sua voz importa.<br>Sua identidade é protegida.</h1>
-<p class="lead">Relate situações que precisam ser apuradas. Você pode se identificar ou permanecer anônimo, e acompanhar o andamento apenas com o número de protocolo.</p>
-{% if erro %}<div class="x-alert">{{ erro }}</div>{% endif %}
-<div class="x-grid">
-<div class="x-card" id="registrar"><h2>Registrar uma denúncia</h2>
-<form method="post" action="/canal-de-denuncias/enviar" autocomplete="off">{{ csrf_input() }}
-<label for="c-cat">Categoria</label><select id="c-cat" name="categoria">{% for c in CATEGORIAS %}<option>{{ c }}</option>{% endfor %}</select>
-<label for="c-rel">Relato *</label><textarea id="c-rel" name="relato" required maxlength="5000" placeholder="Descreva o que aconteceu com o máximo de detalhes possível."></textarea>
-<label for="c-dt">Quando aconteceu?</label><input id="c-dt" name="data_fato" maxlength="60" placeholder="Ex.: mês passado, 10/10/2026">
-<label for="c-lo">Onde aconteceu?</label><input id="c-lo" name="local" maxlength="200">
-<label for="c-en">Pessoas envolvidas</label><input id="c-en" name="envolvidos" maxlength="300">
-<label class="x-check"><input type="checkbox" name="anonima" value="1" checked id="c-an" onchange="document.getElementById('c-id').style.display=this.checked?'none':'block'"><span>Quero permanecer anônimo(a). Nome e contato não serão gravados.</span></label>
-<div id="c-id" style="display:none"><label for="c-no">Seu nome</label><input id="c-no" name="nome" maxlength="120"><label for="c-co">E-mail ou telefone para retorno</label><input id="c-co" name="contato" maxlength="150"></div>
-<div class="hp" aria-hidden="true"><label>Não preencha<input name="website" tabindex="-1" autocomplete="off"></label></div>
-<button class="btn" type="submit">Enviar denúncia <span>→</span></button></form></div>
-<div class="x-card" id="acompanhar"><h2>Acompanhar uma denúncia</h2><p style="font-size:14px;line-height:1.6;color:var(--muted)">Informe o protocolo que você recebeu ao registrar.</p>
-<form method="post" action="/canal-de-denuncias/consultar" autocomplete="off">{{ csrf_input() }}
-<label for="c-pr">Protocolo</label><input id="c-pr" name="protocolo" required maxlength="20" placeholder="EA-XXXXXXXX" value="{{ protocolo or '' }}">
-<button class="btn" type="submit">Consultar <span>→</span></button></form>
-{% if d %}<div style="margin-top:22px;border-top:1px solid var(--line);padding-top:16px"><p style="margin:0 0 6px;font-size:12px;color:var(--muted)">Protocolo {{ d.protocolo }}</p>
-<p style="margin:0 0 10px"><span class="x-pill">{{ d.status }}</span></p>
-<p style="font-size:13px;margin:0 0 6px">Registrada em {{ d.criado_em|dh }} · Atualizada em {{ d.atualizado_em|dh }}</p>
-{% if d.resposta %}<h3 style="margin-top:14px">Resposta</h3><p style="font-size:14px;line-height:1.6">{{ d.resposta }}</p>{% else %}<p style="font-size:14px;color:var(--muted)">Ainda não há resposta final. Consulte novamente mais tarde.</p>{% endif %}</div>{% endif %}
-</div></div></div>{% endblock %}"""
-
-T["protocolo.html"] = """{% extends "base_int.html" %}{% block title %}Denúncia registrada · Ética em Ação{% endblock %}
-{% block head %}<meta name="robots" content="noindex">{% endblock %}
-{% block c %}<div class="wrap"><h1>Denúncia registrada</h1><div class="x-card" style="max-width:640px"><p>Guarde o seu número de protocolo. <strong>Ele é a única forma de acompanhar a denúncia e não poderá ser recuperado.</strong></p>
-<div class="x-proto">{{ protocolo }}</div><a class="btn" href="/canal-de-denuncias?p={{ protocolo }}#acompanhar">Acompanhar agora <span>→</span></a></div></div>{% endblock %}"""
-
-T["admin_login.html"] = """{% extends "base_int.html" %}{% block title %}Entrar · Painel{% endblock %}
-{% block head %}<meta name="robots" content="noindex">{% endblock %}
-{% block c %}<div class="wrap"><div class="x-card" style="max-width:420px;margin:auto"><h2>Painel administrativo</h2>
-{% if erro %}<div class="x-alert">{{ erro }}</div>{% endif %}
-<form method="post">{{ csrf_input() }}<label>Usuário</label><input name="u" required autocomplete="username"><label>Senha</label><input name="s" type="password" required autocomplete="current-password"><button class="btn" type="submit">Entrar</button></form></div></div>{% endblock %}"""
-
-T["admin.html"] = """{% extends "base_int.html" %}{% block title %}Painel · Ética em Ação{% endblock %}
-{% block head %}<meta name="robots" content="noindex">{% endblock %}
-{% block c %}<div class="wrap"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h1>Painel</h1><a class="btn outline" href="/admin/sair" style="margin:0">Sair</a></div>
-{% if msg %}<div class="x-alert x-ok">{{ msg }}</div>{% endif %}
-<div class="x-tabs">{% for k,n in abas %}<a href="/admin?aba={{ k }}" class="{{ 'on' if aba==k }}">{{ n }}{% if cont[k] %} ({{ cont[k] }}){% endif %}</a>{% endfor %}</div>
-{% if aba=='den' %}
-<p style="font-size:13px">Filtrar: <a href="/admin?aba=den">Todas</a>{% for s in STATUS %} · <a href="/admin?aba=den&status={{ s }}">{{ s }}</a>{% endfor %}</p>
-<div class="x-scroll"><table><tr><th>Protocolo</th><th>Data</th><th>Categoria</th><th>Identificação</th><th>Status</th><th></th></tr>
-{% for d in itens %}<tr><td><strong>{{ d.protocolo }}</strong></td><td>{{ d.criado_em|dh }}</td><td>{{ d.categoria }}</td><td>{{ 'Anônima' if d.anonima else d.nome }}</td><td><span class="x-pill">{{ d.status }}</span></td><td><a href="/admin/denuncia/{{ d.id }}" style="color:var(--orange);font-weight:700">Abrir</a></td></tr>{% else %}<tr><td colspan="6">Nenhuma denúncia.</td></tr>{% endfor %}</table></div>
-{% elif aba=='leads' %}
-<div class="x-scroll"><table><tr><th>Data</th><th>Nome</th><th>E-mail</th><th>Interesse</th><th>Mensagem</th><th>Origem</th><th></th></tr>
-{% for l in itens %}<tr><td>{{ l.criado_em|dh }}</td><td>{{ l.nome }}</td><td><a href="mailto:{{ l.email }}">{{ l.email }}</a></td><td>{{ l.interesse }}</td><td>{{ l.mensagem }}</td><td>{{ l.utm_source or l.referrer or '' }}</td>
-<td><form method="post" action="/admin/lead/{{ l.id }}/atendido" style="margin:0">{{ csrf_input() }}<button class="x-pill" style="border:0;cursor:pointer">{{ 'Atendido ✓' if l.atendido else 'Marcar atendido' }}</button></form></td></tr>{% else %}<tr><td colspan="7">Nenhum contato.</td></tr>{% endfor %}</table></div>
-{% elif aba=='posts' %}
-<a class="btn" href="/admin/post/novo" style="margin:0 0 16px">+ Novo conteúdo</a>
-<div class="x-scroll"><table><tr><th>Título</th><th>Status</th><th>Publicado em</th><th></th></tr>
-{% for p in itens %}<tr><td>{{ p.titulo }}</td><td>{{ 'Publicado' if p.publicado else 'Rascunho' }}</td><td>{{ p.publicado_em|data_br }}</td><td><a href="/admin/post/{{ p.id }}" style="color:var(--orange);font-weight:700">Editar</a></td></tr>{% else %}<tr><td colspan="4">Nenhum conteúdo.</td></tr>{% endfor %}</table></div>
-{% else %}
-<p class="lead">Envie JPG, PNG ou WEBP. As imagens ficam no volume (/data/uploads) e são otimizadas automaticamente.</p>
-<div class="x-grid">{% for k,n in SLOTS.items() %}<div class="x-card"><h3>{{ n }}</h3><img class="x-thumb" src="{{ img_url(k, 300) }}" alt="">
-<form method="post" action="/admin/img/{{ k }}" enctype="multipart/form-data">{{ csrf_input() }}<input type="file" name="arq" accept="image/*" required><button class="btn" type="submit" style="margin-top:10px">Enviar</button></form>
-{% if tem_img(k) %}<form method="post" action="/admin/img/{{ k }}/excluir" style="margin-top:8px">{{ csrf_input() }}<button class="x-pill" style="border:0;cursor:pointer">Remover</button></form>{% endif %}</div>{% endfor %}</div>
-{% endif %}</div>{% endblock %}"""
-
-T["admin_den.html"] = """{% extends "base_int.html" %}{% block title %}{{ d.protocolo }} · Painel{% endblock %}
-{% block head %}<meta name="robots" content="noindex">{% endblock %}
-{% block c %}<div class="wrap"><a href="/admin?aba=den" style="font-size:12px;color:var(--orange);font-weight:700">← Denúncias</a><h1 style="margin-top:14px">{{ d.protocolo }}</h1>
-{% if msg %}<div class="x-alert x-ok">{{ msg }}</div>{% endif %}
-<div class="x-grid"><div class="x-card"><p><span class="x-pill">{{ d.status }}</span> · {{ d.criado_em|dh }}</p><p><strong>Categoria:</strong> {{ d.categoria }}</p>
-<p><strong>Identificação:</strong> {% if d.anonima %}Anônima{% else %}{{ d.nome }} — {{ d.contato }}{% endif %}</p>
-<p><strong>Quando:</strong> {{ d.data_fato or '—' }}<br><strong>Onde:</strong> {{ d.local or '—' }}<br><strong>Envolvidos:</strong> {{ d.envolvidos or '—' }}</p>
-<h3>Relato</h3><p style="white-space:pre-wrap;line-height:1.6">{{ d.relato }}</p></div>
-<div class="x-card"><h3>Atualizar andamento</h3><form method="post">{{ csrf_input() }}<label>Status</label><select name="status">{% for s in STATUS %}<option{{ ' selected' if s==d.status }}>{{ s }}</option>{% endfor %}</select>
-<label>Resposta ao denunciante (visível na consulta por protocolo)</label><textarea name="resposta" maxlength="3000">{{ d.resposta or '' }}</textarea><button class="btn" type="submit">Salvar</button></form></div></div></div>{% endblock %}"""
-
-T["admin_post.html"] = """{% extends "base_int.html" %}{% block title %}Conteúdo · Painel{% endblock %}
-{% block head %}<meta name="robots" content="noindex">{% endblock %}
-{% block c %}<div class="wrap"><a href="/admin?aba=posts" style="font-size:12px;color:var(--orange);font-weight:700">← Conteúdos</a><h1 style="margin-top:14px">{{ 'Editar conteúdo' if p else 'Novo conteúdo' }}</h1>
-{% if erro %}<div class="x-alert">{{ erro }}</div>{% endif %}
-<form method="post" enctype="multipart/form-data" class="x-card" style="max-width:820px">{{ csrf_input() }}
-<label>Título *</label><input name="titulo" required maxlength="200" value="{{ p.titulo if p else '' }}">
-<label>Resumo (aparece nos cards)</label><input name="resumo" maxlength="300" value="{{ p.resumo if p and p.resumo else '' }}">
-<label>Texto (separe parágrafos com linha em branco; use “## ” no início para subtítulo)</label><textarea name="corpo" style="min-height:300px">{{ p.corpo if p else '' }}</textarea>
-<label>Imagem de capa</label>{% if p and tem_img('capa-%d'|format(p.id)) %}<img class="x-thumb" src="{{ img_url('capa-%d'|format(p.id), 300) }}" alt=""><br>{% endif %}<input type="file" name="capa" accept="image/*">
-<label class="x-check"><input type="checkbox" name="publicado" value="1"{{ ' checked' if p and p.publicado }}><span>Publicado</span></label>
-<button class="btn" type="submit">Salvar</button></form>
-{% if p %}<form method="post" action="/admin/post/{{ p.id }}/excluir" onsubmit="return confirm('Excluir este conteúdo?')">{{ csrf_input() }}<button class="x-pill" style="border:0;cursor:pointer">Excluir conteúdo</button></form>{% endif %}</div>{% endblock %}"""
-
 
 def _montar_base():
     """Gera o base_int.html a partir do SEU index.html (CSS, topo e rodapé), sem alterá-lo."""
@@ -487,8 +371,8 @@ def _montar_base():
     return pre + '<main class="x">{% block c %}{% endblock %}</main>' + pos
 
 
-T["base_int.html"] = _montar_base()
-app.jinja_env.loader = ChoiceLoader([app.jinja_env.loader, DictLoader(T)])
+# base_int.html (topo/rodapé/CSS do index) é gerado a partir do templates/index.html
+app.jinja_env.loader = ChoiceLoader([app.jinja_env.loader, DictLoader({"base_int.html": _montar_base()})])
 
 
 # ═══ SEGURANÇA ═════════════════════════════════════════════════════════════
@@ -534,17 +418,17 @@ def index():
 
 @app.get("/solucoes")
 def solucoes():
-    return redirect("/#solucoes", 301)
+    return render_template("solucoes.html")
 
 
 @app.get("/quem-somos")
 def quem_somos():
-    return redirect("/#quem-somos", 301)
+    return render_template("quem_somos.html")
 
 
 @app.get("/contato")
 def contato():
-    return redirect("/#contato", 301)
+    return render_template("contato.html")
 
 
 @app.get("/privacidade")
