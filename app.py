@@ -383,9 +383,11 @@ def static_files(filename):
 # ═══ BASE DAS PÁGINAS INTERNAS (herda CSS/topo/rodapé do index.html; páginas ficam em templates/) ═
 INT_CSS = """<style>
 /* páginas internas: cabeçalho ocupa o próprio espaço (na home ele flutua sobre a foto); logo com o mesmo tamanho da home */
-header{position:relative!important;background:var(--paper)}
+header{position:relative!important;padding-bottom:30px;background:linear-gradient(90deg,rgba(251,249,244,.97) 0%,rgba(251,249,244,.9) 38%,rgba(251,249,244,.4) 68%,rgba(8,16,20,.28) 100%),url('{{ img_url('hero', w=1600) }}') 60% 40%/cover no-repeat;box-shadow:inset 0 -3px 0 var(--orange)}
 .nav{padding-bottom:8px}
-.x{padding:28px 0 70px;min-height:72vh;background:var(--paper)}
+.x{padding:40px 0 80px;min-height:72vh;background:radial-gradient(560px 340px at 94% 0,rgba(241,91,23,.10),transparent 70%),linear-gradient(180deg,var(--cream) 0,var(--paper) 460px)}
+.x h1::after{content:"";display:block;width:56px;height:3px;background:var(--orange);margin-top:14px}
+.x-card{box-shadow:0 12px 32px rgba(16,32,43,.07)}.x .post{transition:transform .18s,box-shadow .18s}.x .post:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(16,32,43,.12)}
 .x h1{font:clamp(30px,4vw,44px)/1.1 Georgia,serif;letter-spacing:-1px;margin:0 0 12px}.x h2{font:26px/1.2 Georgia,serif;margin:0 0 10px}.x h3{margin:0 0 8px}
 .x p.lead{font-size:15px;line-height:1.7;color:var(--muted);max-width:720px;margin:0 0 26px}
 .x-video{position:relative;max-width:860px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin:10px 0 24px;background:#000}.x-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
