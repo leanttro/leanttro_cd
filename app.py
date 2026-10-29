@@ -345,7 +345,10 @@ def static_files(filename):
 
 # ═══ BASE DAS PÁGINAS INTERNAS (herda CSS/topo/rodapé do index.html; páginas ficam em templates/) ═
 INT_CSS = """<style>
-.x{padding:125px 0 70px;min-height:72vh;background:var(--paper)}
+/* páginas internas: cabeçalho ocupa o próprio espaço (na home ele flutua sobre a foto); logo com o mesmo tamanho da home */
+header{position:relative!important;background:var(--paper)}
+.nav{padding-bottom:8px}
+.x{padding:28px 0 70px;min-height:72vh;background:var(--paper)}
 .x h1{font:clamp(30px,4vw,44px)/1.1 Georgia,serif;letter-spacing:-1px;margin:0 0 12px}.x h2{font:26px/1.2 Georgia,serif;margin:0 0 10px}.x h3{margin:0 0 8px}
 .x p.lead{font-size:15px;line-height:1.7;color:var(--muted);max-width:720px;margin:0 0 26px}
 .x-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:20px}
