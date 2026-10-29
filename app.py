@@ -315,8 +315,20 @@ def midia(slot):
 
 # ═══ HELPERS DE TEMPLATE ═══════════════════════════════════════════════════
 @app.context_processor
+def whatsapp_fmt():
+    """Número do WhatsApp formatado para exibição: +55 (11) 91234-5678."""
+    d = WHATSAPP
+    if not d:
+        return ""
+    if d.startswith("55") and len(d) in (12, 13):
+        ddd, resto = d[2:4], d[4:]
+        return "+55 (%s) %s-%s" % (ddd, resto[:-4], resto[-4:])
+    return "+" + d
+
+
 def _ctx():
     return dict(
+        whatsapp_num=whatsapp_fmt,
         canonical_url=lambda: request.url_root.rstrip("/") + request.path,
         img_url=img_url, img_abs=img_abs, tem_img=tem_img, capa_url=capa_url,
         whatsapp_link=lambda t="": ("https://wa.me/%s?text=%s" % (WHATSAPP, __import__("urllib.parse").parse.quote(t))) if WHATSAPP else "",
