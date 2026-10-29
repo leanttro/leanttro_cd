@@ -22,7 +22,7 @@ import secrets
 import sqlite3
 import time
 import unicodedata
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from functools import wraps
 from pathlib import Path
 
@@ -112,8 +112,11 @@ CREATE INDEX IF NOT EXISTS ix_hits ON hits(chave, ts);
 """
 
 
+FUSO_BR = timezone(timedelta(hours=-3))  # Brasília (sem horário de verão desde 2019)
+
+
 def agora():
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.now(FUSO_BR).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def conectar():
