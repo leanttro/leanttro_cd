@@ -1,0 +1,4 @@
+{% extends "base_int.html" %}{% block title %}Denúncia registrada · Ética em Ação{% endblock %}
+{% block head %}<meta name="robots" content="noindex">{% endblock %}
+{% block c %}<div class="wrap"><h1>Denúncia registrada</h1><div class="x-card" style="max-width:640px"><p>Guarde o seu número de protocolo. <strong>Ele é a única forma de acompanhar a denúncia e não poderá ser recuperado.</strong></p>
+<div class="x-proto">{{ protocolo }}</div><a class="btn" href="/canal-de-denuncias?p={{ protocolo }}#acompanhar">Acompanhar agora <span>→</span></a></div></div>{% endblock %}

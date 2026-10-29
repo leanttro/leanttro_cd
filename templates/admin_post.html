@@ -1,0 +1,12 @@
+{% extends "base_int.html" %}{% block title %}Conteúdo · Painel{% endblock %}
+{% block head %}<meta name="robots" content="noindex">{% endblock %}
+{% block c %}<div class="wrap"><a href="/admin?aba=posts" style="font-size:12px;color:var(--orange);font-weight:700">← Conteúdos</a><h1 style="margin-top:14px">{{ 'Editar conteúdo' if p else 'Novo conteúdo' }}</h1>
+{% if erro %}<div class="x-alert">{{ erro }}</div>{% endif %}
+<form method="post" enctype="multipart/form-data" class="x-card" style="max-width:820px">{{ csrf_input() }}
+<label>Título *</label><input name="titulo" required maxlength="200" value="{{ p.titulo if p else '' }}">
+<label>Resumo (aparece nos cards)</label><input name="resumo" maxlength="300" value="{{ p.resumo if p and p.resumo else '' }}">
+<label>Texto (separe parágrafos com linha em branco; use “## ” no início para subtítulo)</label><textarea name="corpo" style="min-height:300px">{{ p.corpo if p else '' }}</textarea>
+<label>Imagem de capa</label>{% if p and tem_img('capa-%d'|format(p.id)) %}<img class="x-thumb" src="{{ img_url('capa-%d'|format(p.id), 300) }}" alt=""><br>{% endif %}<input type="file" name="capa" accept="image/*">
+<label class="x-check"><input type="checkbox" name="publicado" value="1"{{ ' checked' if p and p.publicado }}><span>Publicado</span></label>
+<button class="btn" type="submit">Salvar</button></form>
+{% if p %}<form method="post" action="/admin/post/{{ p.id }}/excluir" onsubmit="return confirm('Excluir este conteúdo?')">{{ csrf_input() }}<button class="x-pill" style="border:0;cursor:pointer">Excluir conteúdo</button></form>{% endif %}</div>{% endblock %}
