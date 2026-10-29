@@ -18,7 +18,7 @@
 <meta property="og:type" content="website"><meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Ética em Ação"><meta property="og:url" content="{{ canonical_url() }}">
 <meta property="og:title" content="Ética em Ação | Consultoria e Treinamentos"><meta property="og:description" content="Ética em Ação — consultoria em Compliance, proteção de dados, governança e treinamentos.">
-<meta property="og:image" content="{{ img_abs('og', w=1200) if tem_img('og') else og_logo() }}">{% if not tem_img('og') %}<meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">{% endif %}<meta name="twitter:card" content="summary_large_image">
+{% if tem_img('og') %}<meta property="og:image" content="{{ img_abs('og', w=1200) }}">{% elif tem_img('logo') %}<meta property="og:image" content="{{ img_abs('logo', w=1200) }}">{% endif %}<meta name="twitter:card" content="summary_large_image">
 <style>
 :root{--ink:#10202b;--dark:#10191d;--orange:#f15b17;--cream:#f7f3eb;--paper:#fbf9f4;--muted:#475461;--line:#d9d2c7}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,Helvetica,sans-serif}a{color:inherit;text-decoration:none}.wrap{width:min(1120px,90%);margin:auto}
