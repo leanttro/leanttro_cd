@@ -375,6 +375,9 @@ def _montar_base():
     pre, pos = t[:i], t[j:]
     pre = re.sub(r"<title>.*?</title>", "<title>{% block title %}Ética em Ação{% endblock %}</title>", pre, flags=re.S)
     pre = pre.replace("</head>", INT_CSS + "{% block head %}{% endblock %}</head>", 1)
+    # no painel (/admin) o topo e o rodapé do site somem, para não confundir
+    pre = re.sub(r"(<header\b.*?</header>)", r"{% if not request.path.startswith('/admin') %}\1{% endif %}", pre, count=1, flags=re.S)
+    pos = re.sub(r"(<footer\b.*?</footer>)", r"{% if not request.path.startswith('/admin') %}\1{% endif %}", pos, count=1, flags=re.S)
     return pre + '<main class="x">{% block c %}{% endblock %}</main>' + pos
 
 
