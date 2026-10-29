@@ -314,7 +314,6 @@ def midia(slot):
 
 
 # ═══ HELPERS DE TEMPLATE ═══════════════════════════════════════════════════
-@app.context_processor
 def whatsapp_fmt():
     """Número do WhatsApp formatado para exibição: +55 (11) 91234-5678."""
     d = WHATSAPP
@@ -326,6 +325,7 @@ def whatsapp_fmt():
     return "+" + d
 
 
+@app.context_processor
 def _ctx():
     return dict(
         whatsapp_num=whatsapp_fmt,
