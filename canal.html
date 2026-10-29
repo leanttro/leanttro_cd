@@ -1,0 +1,26 @@
+{% extends "base_int.html" %}{% block title %}Canal de Denúncias · Ética em Ação{% endblock %}
+{% block head %}<meta name="robots" content="noindex">{% endblock %}
+{% block c %}<div class="wrap"><p class="eyebrow">Canal de denúncias</p><h1>Sua voz importa.<br>Sua identidade é protegida.</h1>
+<p class="lead">Relate situações que precisam ser apuradas. Você pode se identificar ou permanecer anônimo, e acompanhar o andamento apenas com o número de protocolo.</p>
+{% if erro %}<div class="x-alert">{{ erro }}</div>{% endif %}
+<div class="x-grid">
+<div class="x-card" id="registrar"><h2>Registrar uma denúncia</h2>
+<form method="post" action="/canal-de-denuncias/enviar" autocomplete="off">{{ csrf_input() }}
+<label for="c-cat">Categoria</label><select id="c-cat" name="categoria">{% for c in CATEGORIAS %}<option>{{ c }}</option>{% endfor %}</select>
+<label for="c-rel">Relato *</label><textarea id="c-rel" name="relato" required maxlength="5000" placeholder="Descreva o que aconteceu com o máximo de detalhes possível."></textarea>
+<label for="c-dt">Quando aconteceu?</label><input id="c-dt" name="data_fato" maxlength="60" placeholder="Ex.: mês passado, 10/10/2026">
+<label for="c-lo">Onde aconteceu?</label><input id="c-lo" name="local" maxlength="200">
+<label for="c-en">Pessoas envolvidas</label><input id="c-en" name="envolvidos" maxlength="300">
+<label class="x-check"><input type="checkbox" name="anonima" value="1" checked id="c-an" onchange="document.getElementById('c-id').style.display=this.checked?'none':'block'"><span>Quero permanecer anônimo(a). Nome e contato não serão gravados.</span></label>
+<div id="c-id" style="display:none"><label for="c-no">Seu nome</label><input id="c-no" name="nome" maxlength="120"><label for="c-co">E-mail ou telefone para retorno</label><input id="c-co" name="contato" maxlength="150"></div>
+<div class="hp" aria-hidden="true"><label>Não preencha<input name="website" tabindex="-1" autocomplete="off"></label></div>
+<button class="btn" type="submit">Enviar denúncia <span>→</span></button></form></div>
+<div class="x-card" id="acompanhar"><h2>Acompanhar uma denúncia</h2><p style="font-size:14px;line-height:1.6;color:var(--muted)">Informe o protocolo que você recebeu ao registrar.</p>
+<form method="post" action="/canal-de-denuncias/consultar" autocomplete="off">{{ csrf_input() }}
+<label for="c-pr">Protocolo</label><input id="c-pr" name="protocolo" required maxlength="20" placeholder="EA-XXXXXXXX" value="{{ protocolo or '' }}">
+<button class="btn" type="submit">Consultar <span>→</span></button></form>
+{% if d %}<div style="margin-top:22px;border-top:1px solid var(--line);padding-top:16px"><p style="margin:0 0 6px;font-size:12px;color:var(--muted)">Protocolo {{ d.protocolo }}</p>
+<p style="margin:0 0 10px"><span class="x-pill">{{ d.status }}</span></p>
+<p style="font-size:13px;margin:0 0 6px">Registrada em {{ d.criado_em|dh }} · Atualizada em {{ d.atualizado_em|dh }}</p>
+{% if d.resposta %}<h3 style="margin-top:14px">Resposta</h3><p style="font-size:14px;line-height:1.6">{{ d.resposta }}</p>{% else %}<p style="font-size:14px;color:var(--muted)">Ainda não há resposta final. Consulte novamente mais tarde.</p>{% endif %}</div>{% endif %}
+</div></div></div>{% endblock %}

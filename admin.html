@@ -1,0 +1,23 @@
+{% extends "base_int.html" %}{% block title %}Painel · Ética em Ação{% endblock %}
+{% block head %}<meta name="robots" content="noindex">{% endblock %}
+{% block c %}<div class="wrap"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><h1>Painel</h1><a class="btn outline" href="/admin/sair" style="margin:0">Sair</a></div>
+{% if msg %}<div class="x-alert x-ok">{{ msg }}</div>{% endif %}
+<div class="x-tabs">{% for k,n in abas %}<a href="/admin?aba={{ k }}" class="{{ 'on' if aba==k }}">{{ n }}{% if cont[k] %} ({{ cont[k] }}){% endif %}</a>{% endfor %}</div>
+{% if aba=='den' %}
+<p style="font-size:13px">Filtrar: <a href="/admin?aba=den">Todas</a>{% for s in STATUS %} · <a href="/admin?aba=den&status={{ s }}">{{ s }}</a>{% endfor %}</p>
+<div class="x-scroll"><table><tr><th>Protocolo</th><th>Data</th><th>Categoria</th><th>Identificação</th><th>Status</th><th></th></tr>
+{% for d in itens %}<tr><td><strong>{{ d.protocolo }}</strong></td><td>{{ d.criado_em|dh }}</td><td>{{ d.categoria }}</td><td>{{ 'Anônima' if d.anonima else d.nome }}</td><td><span class="x-pill">{{ d.status }}</span></td><td><a href="/admin/denuncia/{{ d.id }}" style="color:var(--orange);font-weight:700">Abrir</a></td></tr>{% else %}<tr><td colspan="6">Nenhuma denúncia.</td></tr>{% endfor %}</table></div>
+{% elif aba=='leads' %}
+<div class="x-scroll"><table><tr><th>Data</th><th>Nome</th><th>E-mail</th><th>Interesse</th><th>Mensagem</th><th>Origem</th><th></th></tr>
+{% for l in itens %}<tr><td>{{ l.criado_em|dh }}</td><td>{{ l.nome }}</td><td><a href="mailto:{{ l.email }}">{{ l.email }}</a></td><td>{{ l.interesse }}</td><td>{{ l.mensagem }}</td><td>{{ l.utm_source or l.referrer or '' }}</td>
+<td><form method="post" action="/admin/lead/{{ l.id }}/atendido" style="margin:0">{{ csrf_input() }}<button class="x-pill" style="border:0;cursor:pointer">{{ 'Atendido ✓' if l.atendido else 'Marcar atendido' }}</button></form></td></tr>{% else %}<tr><td colspan="7">Nenhum contato.</td></tr>{% endfor %}</table></div>
+{% elif aba=='posts' %}
+<a class="btn" href="/admin/post/novo" style="margin:0 0 16px">+ Novo conteúdo</a>
+<div class="x-scroll"><table><tr><th>Título</th><th>Status</th><th>Publicado em</th><th></th></tr>
+{% for p in itens %}<tr><td>{{ p.titulo }}</td><td>{{ 'Publicado' if p.publicado else 'Rascunho' }}</td><td>{{ p.publicado_em|data_br }}</td><td><a href="/admin/post/{{ p.id }}" style="color:var(--orange);font-weight:700">Editar</a></td></tr>{% else %}<tr><td colspan="4">Nenhum conteúdo.</td></tr>{% endfor %}</table></div>
+{% else %}
+<p class="lead">Envie JPG, PNG ou WEBP. As imagens ficam no volume (/data/uploads) e são otimizadas automaticamente.</p>
+<div class="x-grid">{% for k,n in SLOTS.items() %}<div class="x-card"><h3>{{ n }}</h3><img class="x-thumb" src="{{ img_url(k, 300) }}" alt="">
+<form method="post" action="/admin/img/{{ k }}" enctype="multipart/form-data">{{ csrf_input() }}<input type="file" name="arq" accept="image/*" required><button class="btn" type="submit" style="margin-top:10px">Enviar</button></form>
+{% if tem_img(k) %}<form method="post" action="/admin/img/{{ k }}/excluir" style="margin-top:8px">{{ csrf_input() }}<button class="x-pill" style="border:0;cursor:pointer">Remover</button></form>{% endif %}</div>{% endfor %}</div>
+{% endif %}</div>{% endblock %}

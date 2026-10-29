@@ -1,0 +1,15 @@
+{% extends "base_int.html" %}{% block title %}Contato · Ética em Ação{% endblock %}
+{% block c %}<div class="wrap contact-grid">
+<div class="contact-copy"><p class="eyebrow">Contato</p><h1>Converse com uma especialista.</h1><p>Conte rapidamente o cenário da sua empresa. Retornamos para entender a necessidade e indicar a solução mais adequada.</p>
+<div class="contact-list">{% set wa = whatsapp_link("Olá! Gostaria de conversar sobre as soluções da Ética em Ação.") %}{% if wa %}<a href="{{ wa }}" target="_blank" rel="noopener">WhatsApp →</a>{% endif %}<a href="mailto:eticaemacao@eticaemacao.com.br">eticaemacao@eticaemacao.com.br</a><a href="https://www.linkedin.com/in/fernanda-dutra-vieira-lopes-8a437769/" target="_blank" rel="noopener">LinkedIn →</a></div></div>
+<form class="form" data-lead action="/lead" method="post">
+<div class="form-row"><div class="field"><label for="f-nome">Nome</label><input id="f-nome" name="nome" required maxlength="120" autocomplete="name"></div><div class="field"><label for="f-empresa">Empresa</label><input id="f-empresa" name="empresa" maxlength="120" autocomplete="organization"></div></div>
+<div class="form-row"><div class="field"><label for="f-email">E-mail</label><input id="f-email" name="email" type="email" required maxlength="254" autocomplete="email"></div><div class="field"><label for="f-tel">Telefone / WhatsApp</label><input id="f-tel" name="telefone" type="tel" maxlength="30" autocomplete="tel" placeholder="(11) 99999-9999"></div></div>
+<div class="field"><label for="f-int">Interesse</label><select id="f-int" name="interesse"><option>Compliance</option><option>LGPD</option><option>DPO as a Service</option><option>Due Diligence</option><option>Canal de Denúncias (para minha empresa)</option><option>Treinamentos</option><option>Outro assunto</option></select></div>
+<div class="field"><label for="f-msg">Mensagem</label><textarea id="f-msg" name="mensagem" maxlength="3000"></textarea></div>
+<div class="hp" aria-hidden="true"><label>Não preencha<input name="website" tabindex="-1" autocomplete="off"></label></div>
+<input type="hidden" name="pagina" value="{{ canonical_url() }}"><input type="hidden" name="referrer" value=""><input type="hidden" name="utm_source" value=""><input type="hidden" name="utm_medium" value=""><input type="hidden" name="utm_campaign" value="">
+<label class="consent"><input type="checkbox" name="consentimento" value="sim" required><span>Concordo com o uso dos dados informados para retorno deste contato, conforme a <a href="/privacidade">Política de Privacidade</a>.</span></label>
+<button class="btn" type="submit">Enviar mensagem <span>→</span></button>
+</form>
+</div>{% endblock %}
