@@ -383,7 +383,7 @@ def static_files(filename):
 # ═══ BASE DAS PÁGINAS INTERNAS (herda CSS/topo/rodapé do index.html; páginas ficam em templates/) ═
 INT_CSS = """<style>
 /* páginas internas: cabeçalho ocupa o próprio espaço (na home ele flutua sobre a foto); logo com o mesmo tamanho da home */
-header{position:relative!important;padding-bottom:30px;background:linear-gradient(90deg,rgba(251,249,244,.97) 0%,rgba(251,249,244,.9) 38%,rgba(251,249,244,.4) 68%,rgba(8,16,20,.28) 100%),url('{{ img_url('hero', w=1600) }}') 60% 40%/cover no-repeat;box-shadow:inset 0 -3px 0 var(--orange)}
+header{position:relative!important;padding-bottom:30px;background:linear-gradient(90deg,rgba(251,249,244,.97) 0%,rgba(251,249,244,.9) 38%,rgba(251,249,244,.55) 62%,rgba(8,16,20,.25) 100%),url('{{ img_url('fundo', w=1600) }}') center/cover no-repeat;box-shadow:inset 0 -3px 0 var(--orange)}
 .nav{padding-bottom:8px}
 .x{padding:40px 0 80px;min-height:72vh;background:radial-gradient(560px 340px at 94% 0,rgba(241,91,23,.10),transparent 70%),linear-gradient(180deg,var(--cream) 0,var(--paper) 460px)}
 .x h1::after{content:"";display:block;width:56px;height:3px;background:var(--orange);margin-top:14px}
