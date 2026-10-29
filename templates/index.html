@@ -97,6 +97,11 @@ header{height:auto}.nav{height:auto;min-height:198px}.brand{min-width:0}.brand i
 .solutions .service p{flex:0 0 auto;margin-bottom:18px}
 .solutions .service .more{display:inline-block}
 }
+/* vídeos: marca de play nas capas */
+.post-capa{position:relative}
+.is-video .post-capa::after{content:"";position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:rgba(16,32,43,.82) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M9 6.5v11l9-5.5z'/%3E%3C/svg%3E") center/26px no-repeat;box-shadow:0 6px 18px rgba(0,0,0,.28)}
+.is-video:hover .post-capa::after{background-color:var(--orange)}
+.videos{padding:34px 0;background:var(--paper)}
 </style>
 <script src="{{ url_for('static', filename='lead.js') }}" defer></script>
 <script>document.addEventListener('DOMContentLoaded',function(){var p=new URLSearchParams(location.search);document.querySelectorAll('.form input[type=hidden]').forEach(function(i){if(i.name==='referrer')i.value=document.referrer||'';else if(p.get(i.name))i.value=p.get(i.name)})})</script>
@@ -135,8 +140,16 @@ header{height:auto}.nav{height:auto;min-height:198px}.brand{min-width:0}.brand i
 <section class="contents" id="conteudos"><div class="wrap">
 <div class="section-head"><div><p class="eyebrow">Conteúdos</p><h2>Informação para decidir melhor.</h2></div><p>Artigos e materiais sobre Compliance, LGPD e governança corporativa.</p></div>
 <div class="posts">{% for p in posts_recentes %}
-<a class="post" href="{{ blog_url }}/{{ p.slug }}"><div class="post-capa"{% if capa_url(p, 800) %} style="background-image:url('{{ capa_url(p, 800) }}')"{% endif %}></div><div class="post-body"><small>{{ p.publicado_em|data_br }}</small><h3>{{ p.titulo }}</h3>{% if p.resumo %}<p>{{ p.resumo }}</p>{% endif %}</div></a>{% endfor %}</div>
+<a class="post{% if p.video %} is-video{% endif %}" href="{{ blog_url }}/{{ p.slug }}"><div class="post-capa"{% if capa_url(p, 800) %} style="background-image:url('{{ capa_url(p, 800) }}')"{% endif %}></div><div class="post-body"><small>{{ p.publicado_em|data_br }}</small><h3>{{ p.titulo }}</h3>{% if p.resumo %}<p>{{ p.resumo }}</p>{% endif %}</div></a>{% endfor %}</div>
 <a class="all-solutions" href="{{ blog_url }}">VER TODOS OS CONTEÚDOS <span>→</span></a>
+</div></section>
+{% endif %}
+{% if videos_recentes %}
+<section class="contents videos" id="videos"><div class="wrap">
+<div class="section-head"><div><p class="eyebrow">Vídeos</p><h2>Assista e saiba mais.</h2></div><p>Vídeos da Ética em Ação sobre Compliance, LGPD e governança corporativa.</p></div>
+<div class="posts">{% for p in videos_recentes %}
+<a class="post is-video" href="{{ blog_url }}/{{ p.slug }}"><div class="post-capa"{% if capa_url(p, 800) %} style="background-image:url('{{ capa_url(p, 800) }}')"{% endif %}></div><div class="post-body"><small>{{ p.publicado_em|data_br }}</small><h3>{{ p.titulo }}</h3>{% if p.resumo %}<p>{{ p.resumo }}</p>{% endif %}</div></a>{% endfor %}</div>
+<a class="all-solutions" href="{{ blog_url }}?tipo=video">VER TODOS OS VÍDEOS <span>→</span></a>
 </div></section>
 {% endif %}
 <section class="contact" id="contato"><div class="wrap contact-grid">
