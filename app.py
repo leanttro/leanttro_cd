@@ -351,6 +351,7 @@ header{position:relative!important;background:var(--paper)}
 .x{padding:28px 0 70px;min-height:72vh;background:var(--paper)}
 .x h1{font:clamp(30px,4vw,44px)/1.1 Georgia,serif;letter-spacing:-1px;margin:0 0 12px}.x h2{font:26px/1.2 Georgia,serif;margin:0 0 10px}.x h3{margin:0 0 8px}
 .x p.lead{font-size:15px;line-height:1.7;color:var(--muted);max-width:720px;margin:0 0 26px}
+.x-card,.x-grid>*{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:break-word}
 .x-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:20px}
 .x-grid{display:grid;gap:20px;grid-template-columns:1fr 1fr;align-items:start}@media(max-width:820px){.x-grid{grid-template-columns:1fr}}
 .x label{display:block;font-size:12px;font-weight:700;margin:13px 0 5px}
