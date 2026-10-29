@@ -2,5 +2,7 @@
 {% block head %}<meta name="description" content="{{ p.resumo or '' }}">{% endblock %}
 {% block c %}<div class="wrap"><a href="/blog" style="font-size:12px;color:var(--orange);font-weight:700">← Todos os conteúdos</a>
 <p class="eyebrow" style="margin-top:22px">{{ p.publicado_em|data_br }}</p><h1>{{ p.titulo }}</h1>
-{% if capa_url(p, 1200) %}<img src="{{ capa_url(p, 1200) }}" alt="" style="width:100%;max-width:760px;border-radius:12px;margin:10px 0 24px">{% endif %}
-<div class="x-art">{{ p.corpo|corpo }}</div></div>{% endblock %}
+{% if p.video %}<div class="x-video"><iframe src="https://www.youtube-nocookie.com/embed/{{ p.video }}" title="{{ p.titulo }}" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+<p style="margin:-12px 0 22px;font-size:13px"><a href="https://www.youtube.com/watch?v={{ p.video }}" target="_blank" rel="noopener" style="color:var(--orange);font-weight:700">Assistir no YouTube →</a></p>
+{% elif capa_url(p, 1200) %}<img src="{{ capa_url(p, 1200) }}" alt="" style="width:100%;max-width:760px;border-radius:12px;margin:10px 0 24px">{% endif %}
+{% if p.corpo %}<div class="x-art">{{ p.corpo|corpo }}</div>{% endif %}</div>{% endblock %}
